@@ -23,6 +23,9 @@ void shiftKey(int &newKey);
 //File encryption
 void encryptFile(int key);
 
+//File decryption
+void decryptFile(int key);
+
 int main() {
     int choice, key;
     key = 3; //default
@@ -39,6 +42,7 @@ int main() {
         }
         else if (choice == 3) {
             //call the decryption function
+            decryptFile(key);
         }
     } while(choice !=4);
     return 0;
@@ -48,7 +52,7 @@ int main() {
 
 //Display menu
 void displayMenu(){
-    cout << "1. Set the shift key value (default is 3,)" << endl;
+    cout << "1. Set the shift key value (default is 3)" << endl;
     cout << "2. Encrypt a file" << endl;
     cout << "3. Decrypt a file" << endl;
     cout << "4. Quit" << endl;
@@ -69,7 +73,7 @@ void encryptFile(int key) {
     ifstream inStream;
     ofstream outStream;
     string inputFile, outFile;
-    char ch
+    char ch;
     //Get input file name
     cout << "Enter the input file name: ";
     cin >> inputFile;
@@ -93,6 +97,54 @@ void encryptFile(int key) {
     }
 
     //Apply the key to the file
+    inStream.get(ch);
+    while(!inStream.eof()){
+        ch = ch + key;
+        outStream << ch;
+        inStream.get(ch);
+    }
+
+    //Close files
+    inStream.close();
+    outStream.close();
+}
+
+//Decryption function
+void decryptFile(int key) {
+    //Declare all variables
+    ifstream inStream;
+    ofstream outStream;
+    string inputFile, outFile;
+    char ch;
+    //Get input file name
+    cout << "Enter the file name to decrypt: ";
+    cin >> inputFile;
+    inStream.open(inputFile);
+    
+    //Check for input failure
+    if(inStream.fail()){
+        cout << "Failed to open up the input file";
+        exit(1);
+    }
+
+    //Get output file name
+    cout << "Enter the output file name: ";
+    cin >> outFile;
+    outStream.open(outFile);
+
+    //Check for output failure
+    if(outStream.fail()) {
+        cout << "Failed to open up the output file";
+        exit(1);
+    }
+
+    //Apply the key to the file
+    inStream.get(ch);
+    while(!inStream.eof()){
+        ch = ch - key;
+        outStream << ch;
+        inStream.get(ch);
+    }
 
     //Close files
     inStream.close();
